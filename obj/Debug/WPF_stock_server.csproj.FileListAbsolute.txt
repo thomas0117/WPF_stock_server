@@ -1,0 +1,16 @@
+C:\Users\Thomas\Desktop\test\WPF_stock_server\obj\Debug\WPF_stock_server.csproj.AssemblyReference.cache
+C:\Users\Thomas\Desktop\test\WPF_stock_server\obj\Debug\MainWindow.g.cs
+C:\Users\Thomas\Desktop\test\WPF_stock_server\obj\Debug\App.g.cs
+C:\Users\Thomas\Desktop\test\WPF_stock_server\obj\Debug\WPF_stock_server_MarkupCompile.cache
+C:\Users\Thomas\Desktop\test\WPF_stock_server\obj\Debug\WPF_stock_server_MarkupCompile.lref
+C:\Users\Thomas\Desktop\test\WPF_stock_server\bin\Debug\WPF_stock_server.exe.config
+C:\Users\Thomas\Desktop\test\WPF_stock_server\bin\Debug\WPF_stock_server.exe
+C:\Users\Thomas\Desktop\test\WPF_stock_server\bin\Debug\WPF_stock_server.pdb
+C:\Users\Thomas\Desktop\test\WPF_stock_server\obj\Debug\MainWindow.baml
+C:\Users\Thomas\Desktop\test\WPF_stock_server\obj\Debug\WPF_stock_server.g.resources
+C:\Users\Thomas\Desktop\test\WPF_stock_server\obj\Debug\WPF_stock_server.Properties.Resources.resources
+C:\Users\Thomas\Desktop\test\WPF_stock_server\obj\Debug\WPF_stock_server.csproj.GenerateResource.cache
+C:\Users\Thomas\Desktop\test\WPF_stock_server\obj\Debug\WPF_stock_server.csproj.CoreCompileInputs.cache
+C:\Users\Thomas\Desktop\test\WPF_stock_server\obj\Debug\WPF_stock_server.exe
+C:\Users\Thomas\Desktop\test\WPF_stock_server\obj\Debug\WPF_stock_server.pdb
+C:\Users\Thomas\Desktop\test\WPF_stock_server\obj\Debug\GeneratedInternalTypeHelper.g.cs
