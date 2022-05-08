@@ -6,90 +6,88 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 
 namespace WPF_stock_server
 {
     class MySocket
-    {// Size of receive buffer.  
-
-
-        // Incoming data from the client.  
+    {
+        public static Socket socket;
         public static string data = null;
+        public Thread listenthread;
 
-        public static void StartListening()
+        public MySocket(Socket s)
         {
-            // Data buffer for incoming data.  
+            socket = s;
+            StockTimer();
+        }
+
+        public string receive()
+        {
             byte[] bytes = new Byte[1024];
+            int bytesRec = socket.Receive(bytes);
+            data += Encoding.UTF8.GetString(bytes, 0, bytesRec);
+            
+            return data;
+        }
 
-            // Establish the local endpoint for the socket.  
-            // Dns.GetHostName returns the name of the
-            // host running the application.  
-            IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
-            IPAddress ipAddress = ipHostInfo.AddressList[0];
-            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 11000);
+        public void listener()
+        {
+            listenthread = new Thread(listen);
+            listenthread.Start();
+        }
 
-            // Create a TCP/IP socket.  
-            Socket listener = new Socket(ipAddress.AddressFamily,
-                SocketType.Stream, ProtocolType.Tcp);
-
-            // Bind the socket to the local endpoint and
-            // listen for incoming connections.  
+        public void listen()
+        {
             try
             {
-                listener.Bind(localEndPoint);
-                listener.Listen(10);
-
-                // Start listening for connections.  
                 while (true)
                 {
-                    Console.WriteLine("Waiting for a connection...");
-                    // Program is suspended while waiting for an incoming connection.  
-                    Socket handler = listener.Accept();
-                    data = null;
+                    String line = receive();
 
-                    // An incoming connection needs to be processed.  
-                    while (true)
+                    if (line.IndexOf("<EOF>") > -1)
                     {
-                        int bytesRec = handler.Receive(bytes);
-                        data += Encoding.ASCII.GetString(bytes, 0, bytesRec);
-
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            MainWindow a = (MainWindow)Application.Current.MainWindow;
-                            a.richTextBox.AppendText("有一個新連線\n");
-                        });
-
-                        
-
-                        if (data.IndexOf("<EOF>") > -1)
-                        {
-                            break;
-                        }
+                        socket.Shutdown(SocketShutdown.Both);
+                        socket.Close();
+                        break;
                     }
-
-                    // Show the data on the console.  
-                    Console.WriteLine("Text received : {0}", data);
-
-
-
-                    // Echo the data back to the client.  
-                    byte[] msg = Encoding.ASCII.GetBytes(data);
-
-                    handler.Send(msg);
-                    handler.Shutdown(SocketShutdown.Both);
-                    handler.Close();
                 }
-
             }
-            catch (Exception e)
+            catch (Exception ee)
             {
-                Console.WriteLine(e.ToString());
+
             }
-
-            Console.WriteLine("\nPress ENTER to continue...");
-            Console.Read();
-
         }
+
+        public static void StockTimer()
+        {
+            System.Timers.Timer timer = new System.Timers.Timer();
+            timer.Enabled = true;
+            timer.Interval = 1000; //執行間隔時間,單位為毫秒; 這裡實際間隔為10分鐘  
+            timer.Start();
+            timer.Elapsed += new System.Timers.ElapsedEventHandler(SendStock);
+        }
+
+        private static void SendStock(object source, ElapsedEventArgs e)
+        {
+            try
+            {
+                byte[] msg = Encoding.UTF8.GetBytes("測試排程事件時間: ");
+                socket.Send(msg);
+                Console.WriteLine("測試排程事件時間: " + DateTime.Now.ToString());
+            }
+            catch
+            {
+
+            }
+        }
+        public void SendMsg(String data)
+        {
+            byte[] msg = Encoding.UTF8.GetBytes(data);
+
+            socket.Send(msg);
+        }
+
     }
 }

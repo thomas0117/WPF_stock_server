@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,9 +30,10 @@ namespace WPF_stock_server
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
-            Thread thread = new Thread(MySocket.StartListening);
+            Thread thread = new Thread(RunSocket);
             thread.Start();
-            richTextBox.AppendText("等待連線中...\n" );
+
+            richTextBox.AppendText("等待連線中...\n");
         }
 
         public void AddMsgToRichTextBox(string msg)
@@ -38,5 +41,29 @@ namespace WPF_stock_server
             richTextBox.AppendText(msg + '\n');
         }
 
+        public void RunSocket()
+        {
+            IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
+            IPAddress ipAddress = ipHostInfo.AddressList[0];
+            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 11000);
+
+            Socket listener = new Socket(ipAddress.AddressFamily,
+                SocketType.Stream, ProtocolType.Tcp);
+
+            listener.Bind(localEndPoint);
+            listener.Listen(10);
+
+            while (true)
+            {
+                MySocket client = new MySocket(listener.Accept());
+
+                this.Dispatcher.Invoke(() =>
+                {
+                    richTextBox.AppendText("接受一個新連線\n");
+                });
+
+                client.listener();
+            }
+        }
     }
 }
